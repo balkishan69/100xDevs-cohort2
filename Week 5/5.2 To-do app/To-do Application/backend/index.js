@@ -25,6 +25,7 @@ app.post("/todo", async function(req,res){
     await todo.create({    // you should await for the thing to actually reach the database before u tell the user that to do created
         title: createPayload.title,
         description: createPayload.description,
+        completed: false
     })
 
     res.json({
@@ -32,12 +33,14 @@ app.post("/todo", async function(req,res){
     })
 })
 
-app.get("/todos", function(req,res){
-    
-
+app.get("/todos", async function(req,res){
+    const todos = await todo.find({});  // since this will be a promise, (you could also put conditions here for certain data to find)
+    res.json({
+        todos
+    });
 })
 
-app.put("/completed", function(req,res){
+app.put("/completed", async function(req,res){
     const updatePayload = req.body;
     const parsedPayload = updateTodo.safeParse(updatePayload);
     if(!parsedPayload.success){
@@ -46,4 +49,15 @@ app.put("/completed", function(req,res){
         })
         return;
     }
+
+    await todo.update({
+        _id: req.body._id
+
+    }, {
+        completed: true
+    })
+
+    res.json({
+        msg: "Todo marked as completed"
+    })
 })
