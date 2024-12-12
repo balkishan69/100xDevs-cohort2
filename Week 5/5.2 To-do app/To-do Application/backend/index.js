@@ -15,6 +15,7 @@ app.post("/todo", function(req,res){
 })
 
 app.get("/todos", function(req,res){
+    
 
 })
 
