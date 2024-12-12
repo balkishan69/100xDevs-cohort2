@@ -188,3 +188,42 @@ promisifiedTimeout().then(function(value){
     console.log("promisified then 6")
     console.log(value);
 });
+
+
+
+//  .catch()
+
+fs.readFile("a.txt", "utf-8", function(err,data){
+
+});
+
+fs.readFile("a.txt", "utf-8").then(function(data){
+
+})
+
+.catch(function(err){       // whenever there is any error, the promisified function will not call .then() , else it will call .catch() , also there is something called 'reject'
+
+})   
+
+
+
+
+//Arrow function
+
+function sum(a,b){     // normal function
+    return a+b;
+}
+
+app.get("/", function(req, res){
+
+})
+
+
+
+const sum = (a,b) => {    // Arrow function
+    return a+b;
+}
+
+app.get("/", (req, res)=>{
+    
+})

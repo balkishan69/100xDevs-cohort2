@@ -48,7 +48,7 @@ shiftExample([1, 2, 3]);
 
 
 
-// *** unshift() - inserts the element from the front
+// *** unshift() - inserts the element in the front
 function unshiftExample(arr, element) {
   console.log("Original Array:", arr);
 

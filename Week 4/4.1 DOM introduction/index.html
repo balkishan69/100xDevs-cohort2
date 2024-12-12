@@ -1,0 +1,271 @@
+<!-- DOM is a tree based representation of the web page 
+
+Read the notes in this folder only
+
+-->
+
+
+<html>
+
+    <script>
+        function populateDiv(){
+            // alert("hi")
+            const a = document.getElementById("firstNumber").value;    // this is how we get the internal value of html element
+            const b = document.getElementById("secondNumber").value;
+            const element = document.getElementById("finalSum")  // it's actually a DOM object reference
+            element.innerHTML = parseInt(a)+parseInt(b);   // innerHTML lets u put something to the div, since a and b are stored as strings and in javascript "1"+"1" is "11"
+
+        }
+    </script>
+
+    <body>
+        <input type="text" id="firstNumber" placeholder="First Number"><br><br>
+        <input type="text" id="secondNumber" placeholder="Second Number"><br><br>
+        <button onclick="populateDiv()">Calculate Sum</button><br><br>
+        <!-- there is also onchange() read about it 
+            there is also oninput="function_to_call" which triggers the function on just inputting something without explicitly clicking the button
+        -->
+
+        <div id="finalSum"></div>
+        <!-- document.getElementById("finalSum").innerHTML="<b>hi there</b>"       we can also put raw html like this -->
+    </body>
+
+</html>
+
+<!-- Note: it's a bad practice to give same "id" to the multiple elements although no error, but we can give same "class" to multiple elements
+
+document.getElementsByClassName("hii") -> array of all elements with class name "hii"
+document.getElementsByClassName("hii")[0] -> first element with class name "hii"
+
+document.querySelector(".finalSum")    -> another way of selecting elements with class "finalSum"
+document.querySelector("#finalSum")
+document.querySelectorAll("div")  -> gives all the divs in the form of array
+
+-->
+
+
+
+
+
+
+
+*** Assignment:  Now, lets say you don't have access to the calculation(sum) logic on the frontend 
+Lets assume its a hard problem that someone has exposed on a backend server 
+And you need to hit the backend server and get back the value (use fetch)
+
+Backend server
+https://sum-server.100xdevs.com/sum?a=1&b=2     -> replace the value of a and b in the browser url query parameter to get the sum
+
+This is the backend server code looks like below:
+
+const express = require("express");
+const cors = require("cors");
+const app = express();
+app.use(cors());
+
+app.get("/sum", (req, res) => {
+    const a = parseInt(req.query.a);
+    const b = parseInt(req.query.b);
+    const sum = a + b;
+    res.send(sum.toString());
+});
+
+app.listen(8080)
+
+
+Below is the Solution to Assignment:
+<html>
+
+    <script>
+        function populateDiv(){
+            const a = document.getElementById("firstNumber").value;    // this is how we get the internal value of html element
+            const b = document.getElementById("secondNumber").value;
+            // const element = document.getElementById("finalSum")  
+            // element.innerHTML = parseInt(a)+parseInt(b);    now you are not allowed to do this, rather hit the backend server and get back the value
+            // use fetch function (we could also use "axios" library which is also used to send out a request to a backend and is much simpler, read about it)
+            // using axios:
+            // const response = await axios.get("https://sum-server.100xdevs.com/sum?a=" + a + "&b=" + b")
+            // response.data
+            fetch("https://sum-server.100xdevs.com/sum?a=" + a + "&b=" + b)    //  using this we have send the request(by default fetch sends get request although we can specify the different request like post here), we haven't yet gotton the response
+                .then(function(response){   // fetch is an async call, returns promise
+                    response.text()   // our response should be in simple text(the sum value), it could be in json format as well then response.json(), here response also returns promise which further needs to be resolved
+                      .then(function(ans){
+                        document.getElementById("finalSum").innerHTML = ans;  // rendering the ans(sum), getting back the response from the server and rendering to webpage
+                      })
+                })
+
+            
+            /*
+            fetch("https://sum-server.100xdevs.com/sum?a=" + a + "&b=" + b, {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json",
+                    "authorization": ""
+                }
+            })  
+            */
+        }
+
+        /*
+        We could also use async await syntax which is cleaner
+        async function populateDiv(){
+            const a = document.getElementById("firstNumber").value;  
+            const b = document.getElementById("secondNumber").value;
+
+            const response = await fetch("https://sum-server.100xdevs.com/sum?a=" + a + "&b=" + b) 
+            const ans = await response.text();
+            document.getElementById("finalSum").innerHTML = ans;
+        }
+        */
+    </script>
+
+    <body>
+        <input type="text" id="firstNumber" placeholder="First Number"><br><br>
+        <input type="text" id="secondNumber" placeholder="Second Number"><br><br>
+        <button onclick="populateDiv()">Calculate Sum</button><br><br>
+
+        <div id="finalSum"></div>
+        
+    </body>
+
+</html>
+
+
+Note: http responds immediately, we can get slowly response by websocket, like when we ask something on chatgpt
+
+
+
+
+
+*** Assignment: Simple Interest calculator
+
+Backend server
+https://sum-server.100xdevs.com/interest?principal=100&rate=5&time=2    -> replace the value of principal,rate and time in the browser url query parameter to get the simple interest
+
+This is the backend server code looks like below:
+
+const express = require("express");
+const cors = require("cors");
+const app = express();
+app.use(cors());
+
+app.get("/interest", (req, res) => {
+    const principal = parseInt(req.query.principal);
+    const rate = parseInt(req.query.rate);
+    const time = parseInt(req.query.time);
+    const interest = (principal * rate * time) / 100;
+    const total = principal + interest;
+    res.send({
+      total: total,
+      interest: interest,
+    })
+  
+  });
+
+app.listen(8080)
+
+
+Below is the Solution to Assignment:
+<html>
+
+    <script>
+        async function populateDiv(){
+            const a = document.getElementById("principal").value;
+            const b = document.getElementById("rate").value;
+            const c = document.getElementById("time").value;
+
+            const response = await fetch("https://sum-server.100xdevs.com/interest?principal=" + a + "&rate=" + b + "&time=" + c);
+            const ans = await response.text();
+            document.getElementById("interest").innerHTML = ans;
+        }
+    </script>
+
+    <body>
+        <input id="principal" type="text" placeholder="Principal"> <br><br>
+        <input id="rate" type="text" placeholder="Rate"><br><br>
+        <input id="time" type="text" placeholder="Time"><br><br>
+
+        <button onclick="populateDiv()">Calculate Interest</button>
+
+        <div id="interest"></div>
+        
+    </body>
+
+</html>
+
+
+
+
+
+
+*** Important concept: "debouncing" and "throtlling"
+
+"DEBOUNCING" (delayed sending out the requests) 
+- It is a technique to prevent multiple requests to the server when the user is typing in
+the input field. It waits for a certain amount of time before sending the request to the server.
+- It is a technique used to prevent a function from being called multiple times in a short
+period of time. This is useful when dealing with user input, such as typing in a search bar
+- Debouncing ensures that a function is executed only after a specified period of time has passed since the last time the event was triggered. 
+If the event is triggered again within that time frame, the timer resets.
+- Useful for search input boxes, where you want to wait until the user stops typing before making an API call.
+
+"THROTLLING" 
+- Throttling ensures that a function is executed at most once in a specified period of time, regardless of how many times the event is triggered.
+- It is a technique to prevent multiple requests to the server when the user is typing in the input field. 
+- It sends the request to the server after a certain amount of time has elapsed since the last request.
+- It is a technique used to limit the number of times a function is called in a short period of time. 
+- This is useful when dealing with user input, such as typing in a search bar. 
+- Useful for scroll events, where you want to execute a function periodically rather than every single time the user scrolls.
+
+Both techniques are used to prevent the function from being called too many times in a short period of time, which can lead to performance issues.
+
+
+<html>
+
+    <script>
+        // Implementing debouncing
+        let timeout;  //once
+        function debouncePopulateDiv(){   // this function job is to call populateDiv() function if this function hasn't been called for 100 milliseconds, 
+                                          // if this function gets called at least once then this function doesn't need to call the populateDiv() below function immediately, it needs to wait for 100 milliseconds and if this function again does not get called for 100 milliseconds, is then it will actually call the below populateDev() function
+                
+                /* 
+                delay the call to populateDiv until i have not been called for 100 ms and i have been called atleast once
+                setTimeout(function(){
+                    populateDiv() 
+                },100)   // this is 100ms, make it 1000ms = 1sec to see the inspect>network tab request going on after 1 sec
+                */
+
+                // If the event is triggered again within that time frame, the timer resets.(how to clear a clock -> clearTimeout())
+                clearTimeout(timeout)
+                timeout = setTimeout(function(){   
+                    populateDiv()
+                },1000);
+
+                
+        }
+        async function populateDiv(){
+            const a = document.getElementById("firstNumber").value;
+            const b = document.getElementById("secondNumber").value;
+
+            const response = await fetch("https://sum-server.100xdevs.com/sum?a=" + a + "&b=" + b)
+            const ans = await response.text();
+            document.getElementById("finalSum").innerHTML = ans;
+        }
+    </script>
+
+    <body>
+        <!-- 
+        <input oninput="populateDiv()" type="text" id="firstNumber" placeholder="First Number"><br><br>
+        <input oninput="populateDiv()" type="text" id="secondNumber" placeholder="Second Number"><br><br>
+        
+        oninput -> Anytime the input changes, call this populateDiv() function
+        but what's the problem here, if i know that a=123 and b=456 then while input these 2 numbers, total 6 request goes to backend due to oninput, how can we optimise it so i don't send out six requests -->
+
+        <input oninput="debouncePopulateDiv()" type="text" id="firstNumber" placeholder="First Number"><br><br>
+        <input oninput="debouncePopulateDiv()" type="text" id="secondNumber" placeholder="Second Number"><br><br>
+
+        <div id="finalSum"></div>
+        
+    </body>
+
+</html>

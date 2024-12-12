@@ -216,7 +216,7 @@ function kiratsAsyncFunction(){
   });
   return p;
 }
-async function main(){
+async function main(){    // make the function asynchronous by using the keyword async before function
   //no callbacks, no .then syntax
   let value = await kiratsAsyncFunction()   // thread didn't stop here, it's just awaiting here, somewhere put in the web API section of js architecture. While it's awaiting the stack continues
                                             // this await keyword is very important, if u don't write it what u get back is the promise itself, if u write await is when u get back the resolved value

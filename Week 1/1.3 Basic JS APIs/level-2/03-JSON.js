@@ -30,7 +30,7 @@ const users = {
 console.log(users["name"])
 
 //how to send this data(above object) to someone, we'll convert it into string
-const user2 = '{"name": "harkirat", "age": 24, "gender": "male"}'  //now this is no longer an object, it's a javascript string now we can't do like this console.log(user2["name"]) because user2 is now a string so we can't do now string["name"] rather we can do like user2["0"]
+const user2 = '{"name": "harkirat", "age": 24, "gender": "male"}'  //now this is no longer an object, it's a javascript string now we can't do like this console.log(user2["name"]) because user2 is now a string so we can't do now string["name"] 
 
 //JSON.parse  -> converts a string into object
 //JSON.stringify   -> converts an object into string

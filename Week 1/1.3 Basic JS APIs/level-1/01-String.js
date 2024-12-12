@@ -6,12 +6,9 @@ var name = "ballu";
 // Run each function to see the output, play and learn by doing.
 
 
-// Length
-function getLength(str) {
-  console.log("Original String:", str);
-  console.log("Length:", str.length);
-}
-getLength("Hello World");
+// Length (str.length)
+const s="balkishan mandal";
+console.log(s.length);
 
 
 // indexOf -> returns the index at which target is present in the string firstly, if not present then returns -1
@@ -58,7 +55,7 @@ console.log(cutIt(value, 2, 5));
 // substring
 function getSubstring(str, startingIndex, substringlength) {
   console.log("Original String:", str);
-  console.log("After substring:", str.substring(start, end));
+  console.log("After substring:", str.substring(start, end));    // str.substr(2,5) -> starting from index 2 and upto length 5
 }
 getSubstring("Hello World", 0, 5);  // starting index if 0 and gives the substring of length 5
 
@@ -71,19 +68,33 @@ function replaceString(str, target, replacement) {
 replaceString("Hello World", "World", "JavaScript");
 
 const str = "hello world";
-console.log(str.replace("world", "balkishan"))
+console.log(str.replace("he", "balkishan"))
 
 
-// split -> splits the string based on the delimiter(or separator) and returns in the form of array
+// split -> splits the string based on the delimiter(or separator) and returns the words in the form of array
 function splitString(str, separator) {
   console.log("Original String:", str);
   console.log("After split:", str.split(separator));
 }
 splitString("Hello World", " ");
 
+/*
+const myName = "hi my name is balkishan";
+const words = myName.split(" ");
+console.log(words)
+
+const myName = "hi my name is balkishan";
+const words = myName.split(",");
+console.log(words)
+
 const myName = "hi my name is balkishan";
 const words = myName.split("h");
 console.log(words)
+
+const myName = "hi,my,name,is,balkishan";
+const words = myName.split(",");
+console.log(words)
+*/
 
 
 // trim - removes the extra spaces only from the beginning and the end

@@ -1,0 +1,107 @@
+<!-- fetch API -->
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+  <script>
+    function getAnimalData(){
+      // alert("hi there");   -> shows an alert pop-up in the browser
+      /*
+        const response = fetch("https://fakerapi.it/api/v1/persons", {     // by default this fetch will send a get() request, thou we can make it change like done below
+          method: "POST"    -> this will change the request type to post
+        });
+        console.log(response);   // inspect>go to console> see the response that is in the form of promise <pending> , as fetch is an async call, and we have earlier learnt how to get data from a promise, by using .then() method of promisified syntax(if something is returning promise then use promisified syntax)
+      */
+
+      fetch("https://fakerapi.it/api/v1/persons").then(function(response){
+        response.json().then(function(finalData){     // response.json() also returns a promise
+          console.log(finalData);     // Although data doesn't get rendered here yet in front of the user, we can see in the console, but we can do this using DOM later
+
+        })
+
+      })
+
+    }
+  </script>
+
+  <button onclick="getAnimalData()">Get animal data</button>      <!--  triggers the function on clicking the button -->
+
+</body>
+</html>
+
+
+
+<!-- *** we can also do this using async await syntax which is much cleaner and easier to read -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+    <div id="container">
+
+    </div>
+
+  <script>
+    async function getAnimalData(){    // add the async keyword before function
+      const response = await fetch("https://fakerapi.it/api/v1/persons");    // add the await keyword while making calls
+      const finalData = await response.json();
+      console.log(finalData);    // Although data doesn't get rendered here yet in front of the user, we can see in the console, but we can do this using DOM later
+    }  
+  </script>
+
+  <button onclick="getAnimalData()">Get animal data</button>
+
+</body>
+</html>
+
+
+
+<!-- *** To render the data fetched from the api to the user -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="container">
+
+    </div>
+
+    <button onclick="getAnimals()">Get Animals</button>
+
+    <script>
+        async function getAnimals(){
+          const response = await fetch("https://fakerapi.it/api/v1/persons");
+          const finalData = await response.json()
+          document.getElementById("container").innerHTML = JSON.stringify(finalData)
+        }
+    </script>
+    
+</body>
+</html>
+
+
+

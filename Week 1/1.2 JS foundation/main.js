@@ -59,7 +59,7 @@ const users1={
 }
 console.log(users1["gender"]);   //users1["gender"] and users1.gender both are same, and it is pass by value. But there is nothing like users1[gender]
 
-//Array of objects (every field of this array is an object in itself)
+//Array of objects (every element of this array is an object)
 const allUsers=[{
     firstName: "balkishan",
     gender: "male"
@@ -84,7 +84,7 @@ for(let i=0;i<allUsers.length;i++){
 
 
 // *** FUNCTIONS -> take arguments as an input, returns a value as an output
-// Note: Functions can tale other functions as input => CALLBACKS
+// Note: Functions can take other functions as input => CALLBACKS
 
 // func. to return the sum of two values
 function sum(a,b){
@@ -183,7 +183,7 @@ function calculateSum(){
 setTimeout(calculateSum(), 2*1000);  // this is equivalent to setTimeout(30, 2*1000) which is incorrect, u r not passing any function anymore rather u are passing the value that function returns
 
 
-// When u run the below code, it prints sum but also undefined is writte, why?
+// When u run the below code, it prints sum but also undefined is printed, why?
 function sum(num1, num2, fnToPass){
     let result = num1+num2;
     fnToPass(result)
@@ -196,7 +196,7 @@ console.log(sum(1,5,displayResult))  // because sum(1,5,displayResult) returns n
 
 
 
-// *** CALLBACK -> passing function as arguments to another function
+// *** CALLBACK -> passing function as arguments to another function (functional arguments)
 
 function square(n){
     return n*n
@@ -219,9 +219,9 @@ console.log(ans1)
 
 // *** ANONYMOUS function  -> which doesn't have any name actually
 
-function square(n){
-    return n*n
-}
+// function square(n){
+//     return n*n
+// }
 function sumOfSomething(a, b, fn){
     const val1 = fn(a);
     const val2 = fn(b);
@@ -246,7 +246,7 @@ function sumOfSomething(a, b, callback){
     const val2 = callback(b)
     return val1+val2;
 }
-const ans2 = sumOfSomething(2, 2, function(n){   // we can also name the function but we shouldn't because we can't use this function anywhere, so don't write like this "function cube(n)" in argument
+const ans2 = sumOfSomething(2, 2, function(n){   // we can also name the function but we shouldn't because we can't use this function anywhere outside here, so don't write like this "function cube(n)" in argument
     return n*n*n
 })
 console.log(ans2)

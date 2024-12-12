@@ -1,0 +1,363 @@
+
+
+*** Assignment: Create a simple To-do application
+==========================
+
+
+
+
+* This is one dumb way:
+<html>
+
+    <script>
+
+        function addToDo(){
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+            // until now innerHTML was just overriding the content but here we have to append all the to-do's one after the other
+
+            // This is below one dumb way of doing the assignment:
+            const originalHtml = document.getElementById("container").innerHTML;
+            document.getElementById("container").innerHTML = originalHtml + `<div>
+                <div>${title}</div>        
+                <div>${description}</div>
+                <button>Mark as done</button>
+            </div>
+            `   // this is backtick ` used to convert multi-elements to string(multiline strings) or also this above is called templating, not possible with double quotes
+                // the above is the structure need to be appended to To-do list
+                //   `hi there ${title}`  and    "hi there "+title   are same thing concatenating strings
+
+        }
+
+    </script>
+
+
+
+    <body>
+
+        <input id="title" type="text" placeholder="title">
+        <br> <br>
+        <input id="description" type="text" placeholder="description">
+        <br><br>
+        <button onclick="addToDo()">Add ToDO</button>
+
+        <div id="container">
+
+        </div>
+
+    </body>
+
+</html>
+
+
+
+
+
+
+
+
+* Another better way:  (document.createElement  syntax)
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let globalId = 1;
+
+    function markAsDone(todoId) {
+      const parent = document.getElementById(todoId);
+      parent.children[2].innerHTML = "Done!"   // indexing from 0
+    }
+
+    function createChild(title, description, id) {
+      const child = document.createElement("div");     // this creates the div element but yet not appended to document(or, webpage)
+      const firstGrandChild = document.createElement("div");   // creates the first child for title but yet not added
+      firstGrandChild.innerHTML = title;
+      const secondGrandChild = document.createElement("div");
+      secondGrandChild.innerHTML = description;
+      const thirdGrandChild = document.createElement("button");
+      thirdGrandChild.innerHTML = "Mark as done";
+      thirdGrandChild.setAttribute("onclick", `markAsDone(${id})`);
+      child.appendChild(firstGrandChild);   // now added the first child to th  child div
+      child.appendChild(secondGrandChild);
+      child.appendChild(thirdGrandChild)
+      child.setAttribute("id", id);
+      return child;
+    }
+
+    function addTodo() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const parent = document.getElementById("container");
+
+      parent.appendChild(createChild(title, description, globalId++));    // giving an id(starts with 1) to each todo so that i know that which specific button to change to done when clicking mark as done button,  createChild creates the structure of your div and, appendChild appends it to document(or, webpage)
+    
+    }
+  </script>
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+
+  <div id="container">
+
+  </div>
+</body>
+
+</html>
+
+
+But still this Current Approach faces Several Challenges:
+- Difficulty in Adding and Removing Elements
+- Lack of central STATE 
+
+whatver is changing or keeps updating in our webpage we put them in STATE
+(In React, state is a built-in object that allows components to store and manage data that can change over time. This data influences how the component renders and behaves.)
+
+When we refer to  state  in the context of our todo application, we are essentially 
+talking about the current representation of the todo data within the application. In 
+a more structured format, the  state  might look something like this:
+[
+  {
+    id: 1,
+    title: "Go to Gym",
+    description: "Go to Gym from 7-9 PM"
+  },
+REACT foundation6  {
+    id: 2,
+    title: "Read a Book",
+    description: "Read 'The Hitchhiker's Guide to the Galaxy'"
+  }
+]
+Here, the  state  is a collection of todo items, each represented as an object with 
+properties such as 'id', 'title', and 'description'. This structured format allows us to 
+organize and manage the current state of the application's data.
+In a real-world scenario, as the user interacts with the application—adding, 
+updating, or removing todos—the  state  dynamically changes to reflect the most 
+recent data. This concept of  state management  becomes crucial for maintaining a 
+consistent and up-to-date representation of the todo list within the application.
+
+
+
+
+
+
+
+
+* Another better approach:
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+
+  <div id="container">
+
+  </div>
+
+  <script>     // Always add the script to below the body
+    
+
+    function createChild(title, description, id) {
+      const child = document.createElement("div");     // this creates the div element but yet not appended to document(or, webpage)
+      const firstGrandChild = document.createElement("div");   // creates the first child for title but yet not added
+      firstGrandChild.innerHTML = title;
+      const secondGrandChild = document.createElement("div");
+      secondGrandChild.innerHTML = description;
+      const thirdGrandChild = document.createElement("button");
+      thirdGrandChild.innerHTML = "Mark as done";
+      thirdGrandChild.setAttribute("onclick", `markAsDone(${id})`);
+      child.appendChild(firstGrandChild);   // now added the first child to th  child div
+      child.appendChild(secondGrandChild);
+      child.appendChild(thirdGrandChild)
+      child.setAttribute("id", id);
+      return child;
+    }
+
+    // state will always be an array, every element of state would have a title,discription and id
+
+    function updateDOMAccToState(state){
+        const parent = document.getElementById("container");
+        parent.innerHTML = "";  // first clear everything
+        for(let i=0;i<state.length;i++){
+          const child = createChild(state[i].title, state[i].description, state[i].id);
+          parent.appendChild(child);
+        }
+    }
+
+    window.setInterval(async function(){   //  it periodically fetches a list of todos from a remote server (https://sum-server.100xdevs.com/todos) and updates the DOM using the updateDOMAccToState function.
+      const response = await fetch('https://sum-server.100xdevs.com/todos');
+      const data = await response.json();
+      updateDOMAccToState(data.todos);
+    },5000)
+  </script> 
+
+</body>
+
+</html>
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let globalId = 1;
+    let todoState = [];
+
+    function markAsDone(todoId) {
+      const parent = document.getElementById(todoId);
+      parent.children[2].innerHTML = "Done!"
+    }
+
+    function createChild(title, description, id) {
+      const child = document.createElement("div");
+      const firstGrandParent = document.createElement("div");
+      firstGrandParent.innerHTML = title;
+      const secondGrandParent = document.createElement("div");
+      secondGrandParent.innerHTML = description;
+      const thirdGrandParent = document.createElement("button");
+      thirdGrandParent.innerHTML = "Mark as done";
+      thirdGrandParent.setAttribute("onclick", `markAsDone(${id})`);
+      child.appendChild(firstGrandParent);
+      child.appendChild(secondGrandParent);
+      child.appendChild(thirdGrandParent)
+      child.setAttribute("id", id);
+      return child;
+    }
+
+    function updateState(newTodos) {
+      const parent = document.getElementById("todos");
+      parent.innerHTML = "";
+      for (let i = 0; i < newTodos.length; i++) {
+        const title = newTodos[i].title;
+        const description = newTodos[i].description;
+        parent.appendChild(createChild(title, description, globalId++));
+      }
+    }
+
+    function addTodo() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      todoState.push({
+        title: title,
+        description: description,
+        id: globalId++,
+      })
+      updateState(todoState);
+    }
+  </script>
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+  <br /> <br />
+
+  <div id="todos">
+
+  </div>
+</body>
+
+</html>
+
+But this is not the optimal solution, the better solution is:
+Don't clear teh DOM upfront, rather update it based on what has changed by calculating the difference
+By remembering the old todos in a variable(virtual DOM)
+
+
+
+
+
+
+* MOST OPTIMAL WAY(this is how exactly react works under the hood):
+Assignment: complete the functions for this todo app
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let globalId = 1;
+    let todoState = [];
+    let oldTodoState = [];
+
+    function addTodo() {
+      // big function we wrote in the beginning
+    }
+
+    function removeTodo(todo) {
+      const element = document.getElementById(todo.id);
+      element.parent.removeChild(element);
+    }
+
+    function updateTodo(oldTodo, newTodo) {
+      const element = document.getElementById(oldTodo.id);
+      element.children[0].innerHTML = newTodo.title;
+      element.children[1].innerHTML = newTodo.description;
+      element.children[0].innerHTML = newTodo.completed ? "Mark as done" : "Done";
+    }
+
+    function updateState(newTodos) {    // function to update the state variable
+      // calculate the diff b/w newTodos and oldTodos.
+      // More specifically, find out what todos are - 
+      // 1. added
+      // 2. deleted
+      // 3. updated
+      const added = [];
+      const deleted = [];
+      const updated = [];
+      // calculate these 3 arrays
+      // call addTodo, removeTodo, updateTodo functions on each of the
+      // elements
+      oldTodoState = newTodos;
+    }
+
+    function addTodo() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      todoState.push({
+        title: title,
+        description: description,
+        id: globalId++,
+      })
+      updateState(todoState);
+    }
+  </script>
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+  <br /> <br />
+
+  <div id="todos">
+
+  </div>
+</body>
+
+</html>
+
+
+Here is the link to this assignment answer:  https://gist.github.com/hkirat/ed34df967f162d152e35537cb8215144
+
+
+
+
+
+
+
+
+

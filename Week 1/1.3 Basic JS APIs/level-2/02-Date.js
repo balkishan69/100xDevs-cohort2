@@ -5,7 +5,7 @@ function dateMethods() {
   // Getting various components of the date
   console.log("Date:", currentDate.getDate());
   console.log("Month:", currentDate.getMonth() + 1); // Months are zero-indexed, so adding 1
-  console.log("Year:", currentDate.getFullYear());
+  console.log("Year:", currentDate.getFullYear());   // gives the current year
   console.log("Hours:", currentDate.getHours());
   console.log("Minutes:", currentDate.getMinutes());
   console.log("Seconds:", currentDate.getSeconds());
@@ -47,6 +47,6 @@ console.log(afterTimeInMs - beforeTimeInMs);
 
 //Printing current Time 
 function currentTimePrint(){
-  console.log(new Date().getTime());
+  console.log(new Date().getTime());   // prints epoc time
 }
 setInterval(currentTimePrint, 1*1000);   // setInterval() is calling the function currentTimePrint() after every 1 sec interval

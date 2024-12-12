@@ -30,7 +30,7 @@ class Animal {
     this.legCount = legCount
     this.speaks = speaks;
   }
-  static myType(){   // static method(or functions) is not associated to objects rather to class itself
+  static myType(){   // static method(or functions) is not associated to objects rather to class(blueprint) itself
     console.log("Animal")   // if u need to call something directly on the class then u have to make it static
   }
   speak(){   // functions on the objects
@@ -42,10 +42,20 @@ class Animal {
 }
 
 console.log(Animal.myType())
-// console.log(Animal.speak())    -> this won't work because speak is not a function at object, this speak() function can be called on the object of the class but not directly to the class
+// console.log(Animal.speak())    -> this won't work because speak is not a function at object, this speak() function can be called on the object of the class but not directly on the class
+                                  // if u need to call something directly on the class then u have to make it static
 
-let dog = new Animal("dog", 4, "bhow bhow");   //creating objects into the class Animal
+// Don't create objects of class Animal like this:
+let dog1={
+  name:"dog",
+  legCount:4,
+  speaks:"bhow bhow"
+}
+
+// Instead create like this
+let dog = new Animal("dog", 4, "bhow bhow");   //creating objects of the class Animal
 let cat = new Animal("cat", 4, "meow meow");
 cat.speak();   //call function on the object
+dog.speak();
 
 
