@@ -1,10 +1,12 @@
 
 const express = require("express");
-const { createTodo, updateTodo } = require("./types");   // importing
+const { createTodo, updateTodo } = require("./types");   // importing (this is called object destructuring)
+const { todo } = require("./db")
+const cors = require("cors")
 const app = express();
 
 app.use(express.json());
-
+app.use(cors())  // any frontend can hit this backend, we could also restrict this to allow only some specific frontend url to hit this backend
 
 // Now we have to do input validation(using zod) that the user is sending the right inputs -> it is done in types.js file
 // body{
@@ -35,9 +37,10 @@ app.post("/todo", async function(req,res){
 
 app.get("/todos", async function(req,res){
     const todos = await todo.find({});  // since this will be a promise, (you could also put conditions here for certain data to find)
+    
     res.json({
         todos
-    });
+    })
 })
 
 app.put("/completed", async function(req,res){
@@ -45,19 +48,37 @@ app.put("/completed", async function(req,res){
     const parsedPayload = updateTodo.safeParse(updatePayload);
     if(!parsedPayload.success){
         res.status(411).json({
-            message: "you sent the wrong inputs",
+            msg: "you sent the wrong inputs",
         })
         return;
     }
 
-    await todo.update({
-        _id: req.body._id
+    try {
+        // Use `findByIdAndUpdate` for simplicity if updating by ID
+        const updatedTodo = await todo.findByIdAndUpdate(
+            { _id: req.body.id },
+            { completed: true },
+            { new: true } // Return the updated document
+        );
 
-    }, {
-        completed: true
-    })
+        if (!updatedTodo) {
+            res.status(404).json({
+                msg: "Todo not found",
+            });
+            return;
+        }
 
-    res.json({
-        msg: "Todo marked as completed"
-    })
+        res.json({
+            msg: "Todo marked as completed",
+            todo: updatedTodo,
+        });
+    } catch (err) {
+        console.error("Error updating todo:", err);
+        res.status(500).json({
+            msg: "An error occurred while updating the todo",
+        });
+    }
 })
+
+
+app.listen(3000);
