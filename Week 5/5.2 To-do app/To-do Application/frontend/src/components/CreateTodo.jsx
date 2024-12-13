@@ -34,7 +34,15 @@ export function CreateTodo(){   // start with capital C
             margin: 10
         }} onClick={() => {
             // this is slightly easier if we use axios library
+            
+            // authorization to frontend using axios
+            // first run npm install axios
+            // axios.post("http://localhost:3000/signin", {
+                // username: title,
+                // password: description
+            //})
             fetch("http://localhost:3000/todo", {
+                // try adding authorization to your frontend
                 method: "POST",
                 body: JSON.stringify({
                     // title: document.getElementById("title").innerHTML,  // but this is not the right way to do it, there is a better way to do this using "react-query"
